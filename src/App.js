@@ -1,26 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components"
+import {TopBar} from "./components/TopBar"
+
+const Wrapper = styled.div`
+  header {
+    background: tan;
+    height:70px;
+  }
+  .content{
+    display: flex;
+    aside{
+      width:200px;
+      height:calc(100vh - 70px);
+      background: #EEE;
+    }
+    main{
+      background: #FFF;
+      width:100%;
+    }
+  }
+`
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Wrapper>
+      <header>导航栏</header>
+      <div className="content">
+        <aside>
+          <TopBar/>
+        </aside>
+        <main>内容栏</main>
+      </div>
+    </Wrapper>
+  )
 }
 
 export default App;
