@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from "styled-components"
-import {TopBar} from "./components/TopBar"
+import {Canvas} from "./components/Canvas"
+import {Tool} from "./components/Tool"
 
 const Wrapper = styled.div`
   header {
@@ -17,6 +18,9 @@ const Wrapper = styled.div`
     main{
       background: #FFF;
       width:100%;
+      display:flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 `
@@ -27,9 +31,11 @@ function App() {
       <header>导航栏</header>
       <div className="content">
         <aside>
-          <TopBar/>
+          <Tool/>
         </aside>
-        <main>内容栏</main>
+        <main>
+          <Canvas/>
+        </main>
       </div>
     </Wrapper>
   )
