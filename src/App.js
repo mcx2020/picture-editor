@@ -3,7 +3,6 @@ import styled from "styled-components"
 import {Canvas} from "./components/Canvas"
 import {Tool} from "./components/Tool"
 import {TopBar} from "./components/TopBar"
-import dog3 from './img/dog3.jpg'
 
 const Wrapper = styled.div`
   .header {
@@ -16,6 +15,7 @@ const Wrapper = styled.div`
       display: block;
       overflow: auto;
       min-width:200px;
+      max-width:200px;
       height:calc(100vh - 70px);
       background: #EEE;
     }
@@ -27,7 +27,7 @@ const Wrapper = styled.div`
       align-items: center;
     }
     button{
-      margin-left:80px;
+      margin:0 60px;
     }
     canvas{
       border:1px solid green;
@@ -42,7 +42,6 @@ class App extends React.Component{
   constructor(props) {
     super(props)
     this.canvas = React.createRef()
-    this.img = React.createRef()
     this.canvasParameter = {
       canvasSize:{
         width:400+"px",
@@ -73,28 +72,17 @@ class App extends React.Component{
         height:180+"px"
       }
     }
-    this.canvasViewRelated = {
-      width:200+'px',
-      height:200+'px'
-    }
   }
   previewPicture=()=>{
     console.log('开始预览图片啦')
     console.log(this.canvas.current)
   }
 
-  placePicture = ()=>{
-    const canvas = this.canvas.current
-    let img = this.img.current
-    let c = canvas.getContext('2d')
-    c.drawImage(img, 0,0)
-  }
-
   componentDidMount() {
     const canvas = this.canvas.current
     const setCanvas = ()=>{
-      canvas.width = "300"
-      canvas.height = "300"
+      canvas.width = "400"
+      canvas.height = "400"
     }
     const drawShape = ()=>{
       let c = canvas.getContext('2d')
@@ -130,7 +118,6 @@ class App extends React.Component{
             <Canvas parameter={this.canvasParameter}/>
             <button onClick={this.previewPicture}>点击我预览图片</button>
             <canvas ref={this.canvas}>当前浏览器不支持 canvas</canvas>
-            <img className="img" ref={this.img} src={dog3} alt="" onLoad={this.placePicture} />
           </main>
 
         </div>

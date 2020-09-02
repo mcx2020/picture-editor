@@ -23,8 +23,8 @@ const Wrapper = styled.div`
 function TopBar(){
   return (
     <Wrapper>
-      <button onClick={()=>{console.log("Hello")}}>预览图片</button>
-      <button>下载图片</button>
+      <button>好看的按钮</button>
+      <button>好看的按钮</button>
     </Wrapper>
   )
 }

@@ -29,28 +29,19 @@ class Tool extends React.Component{
       }
       reader.addEventListener('load',()=>{
         this.setState({imgList:{...this.state.imgList,[`img${i}`]:reader.result}})
-        console.log(this.state)
       },false)
     }
   }
 
-  handleDrag(){
-    console.log('我要处理拖拽了')
-  }
-
-  componentDidMount() {
-  }
-
   render(){
+    console.log('渲染了1次')
     let imgList = []
     for (let i in this.state.imgList){
-      imgList.push(<img onDragExit={this.handleDrag.bind(this)} src={this.state.imgList[i]} alt=""/>)
+      imgList.push(<img key={i.toString()} src={this.state.imgList[i]} alt=""/>)
     }
     return (
       <Wrapper>
-        {/*<input type="file" ref={this.myRef} onChange={this.uploadImg.bind(this)}/>*/}
         <input type="file" multiple ref={this.inputImg} onChange={this.uploadImg.bind(this)}/>
-        <img ref={this.myImg} onDragExit={this.handleDrag.bind(this)} src="" alt=""/>
         {imgList}
       </Wrapper>
     )
