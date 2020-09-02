@@ -6,18 +6,20 @@ import {TopBar} from "./components/TopBar"
 import dog3 from './img/dog3.jpg'
 
 const Wrapper = styled.div`
-  header {
+  .header {
     background: tan;
     height:70px;
   }
   .content{
     display: flex;
-    aside{
-      width:200px;
+    .aside{
+      display: block;
+      overflow: auto;
+      min-width:200px;
       height:calc(100vh - 70px);
       background: #EEE;
     }
-    main{
+    .main{
       background: #FFF;
       width:100%;
       display:flex;
@@ -84,7 +86,6 @@ class App extends React.Component{
   placePicture = ()=>{
     const canvas = this.canvas.current
     let img = this.img.current
-    console.log(img)
     let c = canvas.getContext('2d')
     c.drawImage(img, 0,0)
   }
@@ -118,14 +119,14 @@ class App extends React.Component{
   render(){
     return (
       <Wrapper>
-        <header>
+        <header className="header">
           <TopBar/>
         </header>
         <div className="content">
-          <aside>
+          <aside className="aside">
             <Tool/>
           </aside>
-          <main>
+          <main className="main">
             <Canvas parameter={this.canvasParameter}/>
             <button onClick={this.previewPicture}>点击我预览图片</button>
             <canvas ref={this.canvas}>当前浏览器不支持 canvas</canvas>

@@ -29,11 +29,6 @@ class Canvas extends React.Component{
   }
   handleDrop(imgID,event){
     this[imgID].current.src = `${event.dataTransfer.getData("text/plain")}`;
-    setTimeout(()=>{
-      console.log(this.img1.current.width)
-      console.log(this.img1.current.height)
-    },1000)
-    console.log(this.img1.current)
   }
 
   render(){
