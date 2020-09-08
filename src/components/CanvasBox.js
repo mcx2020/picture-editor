@@ -73,7 +73,7 @@ class CanvasBox extends React.Component{
              onDrop={this.handleDrop.bind(this,"img4")}>
           <img ref={this.img4} src="" alt=""/>
         </div>
-        <button className='transform-data' onClick={this.uploadImg}>把 img 信息传递</button>
+        <button className='transform-data' onClick={this.uploadImg}>预览图片</button>
       </Wrapper>
     )
   }

@@ -25,11 +25,15 @@ const Wrapper = styled.div`
       display:flex;
       justify-content: center;
       align-items: center;
+      
     }
     canvas.show{
       margin-left:50px;
       border:1px solid black;
       box-shadow: 0 0 5px rgba(0,0,0,0.4);
+    }
+    .download-canvas{
+      margin-left:40px;
     }
     .img{
       width:300px;
@@ -139,7 +143,15 @@ class App extends React.Component{
     }
     return [sx,sy,imgWidth,imgHeight]
   }
-  
+
+  downloadCanvas = ()=>{
+    const canvas = this.canvas.current
+    let a = document.createElement("a");
+    a.href = canvas.toDataURL();
+    a.download = 'my image';
+    a.click()
+  }
+
   componentDidMount() {
     const canvas = this.canvas.current
     const setCanvas = ()=>{
@@ -153,15 +165,8 @@ class App extends React.Component{
       c.fillStyle = 'rgba(0,0,255,0.5)'
       c.fillRect(100,80,50,50)
     }
-    const canvasToImg = (canvas,imgName)=>{
-      let a = document.createElement("a");
-      a.href = canvas.toDataURL();
-      a.download = imgName;
-      // a.click()
-    }
     setCanvas()
     drawShape()
-    canvasToImg(canvas,'矩形')
   }
 
   render(){
@@ -177,6 +182,7 @@ class App extends React.Component{
           <main className="main">
             <CanvasBox parameter={this.canvasParameter} getImgScr={this.getImgSrcAndTransform}/>
             <canvas className='show' ref={this.canvas}>当前浏览器不支持 Canvas，推荐使用 Chrome 浏览器</canvas>
+            <button className='download-canvas' onClick={this.downloadCanvas}>下载图片</button>
           </main>
         </div>
       </Wrapper>
