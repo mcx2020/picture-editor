@@ -16,19 +16,34 @@ const Wrapper = styled.div`
     height:100%;
     object-fit: cover;
   }
+  button.transform-data{
+    position:absolute;
+    right:100%;
+    top:50%;
+    transform:translate(-50%,-50%);
+  }
 `
 
-class Canvas extends React.Component{
+class CanvasBox extends React.Component{
   constructor(props) {
     super(props);
     this.img1 = React.createRef()
     this.img2 = React.createRef()
     this.img3 = React.createRef()
     this.img4 = React.createRef()
-    this.xxx = React.createRef()
   }
   handleDrop(imgID,event){
     this[imgID].current.src = `${event.dataTransfer.getData("text/plain")}`;
+  }
+
+  uploadImg = ()=>{
+    let imgSrcList = {
+      img1:this.img1.current.src,
+      img2:this.img2.current.src,
+      img3:this.img3.current.src,
+      img4:this.img4.current.src
+    }
+    this.props.getImgScr(imgSrcList)
   }
 
   render(){
@@ -58,11 +73,10 @@ class Canvas extends React.Component{
              onDrop={this.handleDrop.bind(this,"img4")}>
           <img ref={this.img4} src="" alt=""/>
         </div>
-        <img ref={this.xxx} src="" alt=""/>
+        <button className='transform-data' onClick={this.uploadImg}>把 img 信息传递</button>
       </Wrapper>
     )
   }
-
 }
 
-export {Canvas}
+export {CanvasBox}

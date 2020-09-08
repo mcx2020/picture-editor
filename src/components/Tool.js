@@ -14,7 +14,6 @@ class Tool extends React.Component{
   constructor(props) {
     super(props);
     this.inputImg = React.createRef();
-    this.myImg = React.createRef();
     this.state = {
       imgList:{}
     }
@@ -37,7 +36,9 @@ class Tool extends React.Component{
     console.log('渲染了1次')
     let imgList = []
     for (let i in this.state.imgList){
-      imgList.push(<img key={i.toString()} src={this.state.imgList[i]} alt=""/>)
+      if(this.state.imgList.hasOwnProperty(i)){
+        imgList.push(<img key={i.toString()} src={this.state.imgList[i]} alt=""/>)
+      }
     }
     return (
       <Wrapper>

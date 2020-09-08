@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components"
-import {Canvas} from "./components/Canvas"
+import {CanvasBox} from "./components/CanvasBox"
 import {Tool} from "./components/Tool"
 import {TopBar} from "./components/TopBar"
 
@@ -26,11 +26,10 @@ const Wrapper = styled.div`
       justify-content: center;
       align-items: center;
     }
-    button{
-      margin:0 60px;
-    }
-    canvas{
-      border:1px solid green;
+    canvas.show{
+      margin-left:50px;
+      border:1px solid black;
+      box-shadow: 0 0 5px rgba(0,0,0,0.4);
     }
     .img{
       width:300px;
@@ -42,42 +41,105 @@ class App extends React.Component{
   constructor(props) {
     super(props)
     this.canvas = React.createRef()
+    this.state = {
+      canvasSizeShow:{
+        canvasSize:{width:'xxx',height:'yyy'},
+        picture1:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
+        picture2:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
+        picture3:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
+        picture4:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
+      }
+    }
+
     this.canvasParameter = {
       canvasSize:{
-        width:400+"px",
-        height:400+"px"
+        width:400,
+        height:400
       },
       box1:{
-        top:10+"px",
-        left:10+"px",
-        width:180+"px",
-        height:180+"px"
+        top:10,
+        left:10,
+        width:180,
+        height:180
       },
       box2: {
-        top: 10+"px",
-        left: 210+"px",
-        width: 180+"px",
-        height: 180+"px"
+        top: 10,
+        left: 210,
+        width: 180,
+        height: 180
       },
       box3: {
-        top: 210+"px",
-        left: 10+"px",
-        width: 180+"px",
-        height: 180+"px"
+        top: 210,
+        left: 10,
+        width: 180,
+        height: 180
       },
       box4:{
-        top:210+"px",
-        left:210+"px",
-        width:180+"px",
-        height:180+"px"
+        top:210,
+        left:210,
+        width:180,
+        height:180
       }
     }
   }
-  previewPicture=()=>{
-    console.log('开始预览图片啦')
-    console.log(this.canvas.current)
+
+  getImgSrcAndTransform = (srcList)=>{
+    return new Promise((resolve)=>{
+      resolve(srcList)
+    }).then(this.convertImgElement)
+      .then(this.canvasDrawImg)
   }
 
+  convertImgElement = (srcList)=>{
+    let imgObject = {}
+    for(let i in srcList){
+      if(srcList.hasOwnProperty(i)){
+        let img = new Image()
+        img.src = srcList[i]
+        imgObject[i] = img
+      }
+    }
+    console.log(imgObject)
+    return imgObject
+  }
+
+  canvasDrawImg = (imgObject)=>{
+    for(let i in imgObject){
+      if(imgObject.hasOwnProperty(i)){
+        let box = 'box' + /\d/.exec(i)
+        console.log(box)
+        console.log(this.canvasParameter[box].width)
+        console.log(this.canvasParameter[box].height)
+        let [dx,dy,dw,dh] = [this.canvasParameter[box].left,
+          this.canvasParameter[box].top,
+          this.canvasParameter[box].width,
+          this.canvasParameter[box].height,
+        ]
+        let [sx,sy,sw,sh] = this.calculateImgSize(this.canvasParameter[box].width,this.canvasParameter[box].height,imgObject[i].width,imgObject[i].height)
+
+        let ctx = this.canvas.current.getContext('2d')
+        ctx.drawImage(imgObject[i],sx,sy,sw,sh,dx,dy,dw,dh)
+      }
+    }
+  }
+
+  calculateImgSize = (boxWidth,boxHeight,imgWidth,imgHeight)=>{
+    let sx,sy
+    let boxRatio = boxWidth/boxHeight
+    let imgRatio = imgWidth/imgHeight
+    if(imgRatio > boxRatio){
+
+      sx = (imgWidth - imgHeight*boxRatio)/2
+      sy = 0
+      imgWidth = imgHeight*boxRatio
+    }else{
+      sx = 0
+      sy =  (imgHeight-imgWidth/boxRatio)/2
+      imgHeight = imgWidth/boxRatio
+    }
+    return [sx,sy,imgWidth,imgHeight]
+  }
+  
   componentDidMount() {
     const canvas = this.canvas.current
     const setCanvas = ()=>{
@@ -97,11 +159,9 @@ class App extends React.Component{
       a.download = imgName;
       // a.click()
     }
-
     setCanvas()
     drawShape()
     canvasToImg(canvas,'矩形')
-
   }
 
   render(){
@@ -115,11 +175,9 @@ class App extends React.Component{
             <Tool/>
           </aside>
           <main className="main">
-            <Canvas parameter={this.canvasParameter}/>
-            <button onClick={this.previewPicture}>点击我预览图片</button>
-            <canvas ref={this.canvas}>当前浏览器不支持 canvas</canvas>
+            <CanvasBox parameter={this.canvasParameter} getImgScr={this.getImgSrcAndTransform}/>
+            <canvas className='show' ref={this.canvas}>当前浏览器不支持 Canvas，推荐使用 Chrome 浏览器</canvas>
           </main>
-
         </div>
       </Wrapper>
     )
