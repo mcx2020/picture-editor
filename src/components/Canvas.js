@@ -22,11 +22,41 @@ const Wrapper = styled.div`
     top:50%;
     transform:translate(-50%,-50%);
   }
+  .line-row1{
+    position:absolute;
+    background:blue;
+    cursor: ns-resize;
+  }
+  .line-column1{
+    position:absolute;
+    background:red;
+    cursor:ew-resize;
+  }  
+ 
 `
 
-class CanvasBox extends React.Component{
+class Canvas extends React.Component{
   constructor(props) {
     super(props);
+    this.state = {
+      draggable:false,
+      lineDirection:null,
+      position: null,
+      rowLine:{
+        width: '100%',
+        height:'10px',
+        top:195,
+        left:0,
+        zIndex:'5'
+      },
+      columnLine:{
+        width: '10px',
+        height:'100%',
+        top:0,
+        left:195,
+        zIndex:'5'
+      }
+    }
     this.img1 = React.createRef()
     this.img2 = React.createRef()
     this.img3 = React.createRef()
@@ -46,9 +76,57 @@ class CanvasBox extends React.Component{
     this.props.getImgScr(imgSrcList)
   }
 
+  lineDown = (lineDirection,e)=>{
+    this.setState({draggable:true})
+    this.setState({position:[e.clientX,e.clientY]})
+    console.log(e.clientX)
+    this.setState({lineDirection})
+  }
+  lineMove = (e)=>{
+    if(this.state.draggable === false)return;
+    let deltaX = e.clientX - this.state.position[0]
+    let deltaY = e.clientY - this.state.position[1]
+
+    if(this.state.lineDirection === 'row'){
+      let top = parseInt(this.state.rowLine.top) + deltaY
+      this.setState({rowLine:{
+          ...this.state.rowLine,
+          width: 400,
+          height:10,
+          top,
+          zIndex:'5'
+        }})
+    }else{
+      let left = parseInt(this.state.columnLine.left) + deltaX
+      this.setState({columnLine:{
+          ...this.state.columnLine,
+          width: 10,
+          height:400,
+          left,
+          zIndex:'5'
+        }})
+    }
+
+    this.setState({
+      position:[e.clientX,e.clientY]
+    })
+  }
+
+  lineUp = ()=>{
+    this.setState({draggable:false})
+    console.log('弹起了')
+  }
   render(){
     return (
-      <Wrapper style={this.props.parameter.canvasSize}>
+      <Wrapper style={this.props.parameter.canvasSize}
+               onMouseMove={this.lineMove}
+               onMouseUp={this.lineUp}>
+        <div className="line-row1"
+             style={this.state.rowLine}
+             onMouseDown={this.lineDown.bind(null,'row')} />
+        <div className="line-column1"
+             style={this.state.columnLine}
+             onMouseDown={this.lineDown.bind(null,'column')} />
         <div className="picture-area"
              style={this.props.parameter.box1}
              onDragOver={(event)=>{event.preventDefault()}}
@@ -79,4 +157,4 @@ class CanvasBox extends React.Component{
   }
 }
 
-export {CanvasBox}
+export {Canvas}

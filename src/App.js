@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components"
-import {CanvasBox} from "./components/CanvasBox"
+import {Canvas} from "./components/Canvas"
 import {Tool} from "./components/Tool"
 import {TopBar} from "./components/TopBar"
 
@@ -180,7 +180,7 @@ class App extends React.Component{
             <Tool/>
           </aside>
           <main className="main">
-            <CanvasBox parameter={this.canvasParameter} getImgScr={this.getImgSrcAndTransform}/>
+            <Canvas parameter={this.canvasParameter} getImgScr={this.getImgSrcAndTransform}/>
             <canvas className='show' ref={this.canvas}>当前浏览器不支持 Canvas，推荐使用 Chrome 浏览器</canvas>
             <button className='download-canvas' onClick={this.downloadCanvas}>下载图片</button>
           </main>

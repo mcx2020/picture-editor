@@ -33,6 +33,9 @@
   },
   "devDependencies": {
     "classnames": "^2.2.6",
+    "//": "我实际安装使用的是 dart-sass@1.25.0 而不是 node-sas",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^10.0.2",
     "styled-components": "^5.1.1"
   }
 }
