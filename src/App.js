@@ -52,37 +52,36 @@ class App extends React.Component{
         picture2:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
         picture3:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
         picture4:{positionX:'xxx',positionY:'yyy',width:'xxx',height:'yyy'},
-      }
-    }
-
-    this.canvasParameter = {
-      canvasSize:{
-        width:400,
-        height:400
       },
-      box1:{
-        top:10,
-        left:10,
-        width:180,
-        height:180
-      },
-      box2: {
-        top: 10,
-        left: 210,
-        width: 180,
-        height: 180
-      },
-      box3: {
-        top: 210,
-        left: 10,
-        width: 180,
-        height: 180
-      },
-      box4:{
-        top:210,
-        left:210,
-        width:180,
-        height:180
+      canvasParameter:{
+        canvasSize:{
+          width:400,
+          height:400
+        },
+        box1:{
+          top:10,
+          left:10,
+          width:180,
+          height:180
+        },
+        box2: {
+          top: 10,
+          left: 210,
+          width: 180,
+          height: 180
+        },
+        box3: {
+          top: 210,
+          left: 10,
+          width: 180,
+          height: 180
+        },
+        box4:{
+          top:210,
+          left:210,
+          width:180,
+          height:180
+        }
       }
     }
   }
@@ -107,20 +106,22 @@ class App extends React.Component{
     return imgObject
   }
 
+  // 生成预览图
   canvasDrawImg = (imgObject)=>{
+    let ctx = this.canvas.current.getContext('2d')
+    ctx.clearRect(0,0,this.state.canvasParameter.canvasSize.width,this.state.canvasParameter.canvasSize.height);
     for(let i in imgObject){
       if(imgObject.hasOwnProperty(i)){
         let box = 'box' + /\d/.exec(i)
         console.log(box)
-        console.log(this.canvasParameter[box].width)
-        console.log(this.canvasParameter[box].height)
-        let [dx,dy,dw,dh] = [this.canvasParameter[box].left,
-          this.canvasParameter[box].top,
-          this.canvasParameter[box].width,
-          this.canvasParameter[box].height,
+        console.log(this.state.canvasParameter[box].width)
+        console.log(this.state.canvasParameter[box].height)
+        let [dx,dy,dw,dh] = [this.state.canvasParameter[box].left,
+          this.state.canvasParameter[box].top,
+          this.state.canvasParameter[box].width,
+          this.state.canvasParameter[box].height,
         ]
-        let [sx,sy,sw,sh] = this.calculateImgSize(this.canvasParameter[box].width,this.canvasParameter[box].height,imgObject[i].width,imgObject[i].height)
-
+        let [sx,sy,sw,sh] = this.calculateImgSize(this.state.canvasParameter[box].width,this.state.canvasParameter[box].height,imgObject[i].width,imgObject[i].height)
         let ctx = this.canvas.current.getContext('2d')
         ctx.drawImage(imgObject[i],sx,sy,sw,sh,dx,dy,dw,dh)
       }
@@ -144,12 +145,77 @@ class App extends React.Component{
     return [sx,sy,imgWidth,imgHeight]
   }
 
+  // 下载这张图片
   downloadCanvas = ()=>{
     const canvas = this.canvas.current
     let a = document.createElement("a");
     a.href = canvas.toDataURL();
     a.download = 'my image';
     a.click()
+  }
+
+  justifyBox = (box,deltaX,deltaY)=>{
+    if(box === 'box1'){
+      const width = this.state.canvasParameter[box].width + deltaX
+      const height = this.state.canvasParameter[box].height + deltaY
+      this.setState({
+        canvasParameter:{
+          ...this.state.canvasParameter,
+          [box]:{
+            top:10,
+            left:10,
+            width,
+            height
+          },
+        }
+      })
+    }else if(box === 'box2'){
+      const width = this.state.canvasParameter[box].width - deltaX
+      const left = this.state.canvasParameter[box].left + deltaX
+      const height = this.state.canvasParameter[box].height + deltaY
+      this.setState({
+        canvasParameter:{
+          ...this.state.canvasParameter,
+          [box]:{
+            top:10,
+            left,
+            width,
+            height
+          },
+        }
+      })
+    }else if(box === 'box3'){
+      const width = this.state.canvasParameter[box].width + deltaX
+      const height = this.state.canvasParameter[box].height - deltaY
+      const top = this.state.canvasParameter[box].top + deltaY
+      this.setState({
+        canvasParameter:{
+          ...this.state.canvasParameter,
+          [box]:{
+            top,
+            left:10,
+            width,
+            height
+          },
+        }
+      })
+    }else if(box === 'box4'){
+      const width = this.state.canvasParameter[box].width - deltaX
+      const left = this.state.canvasParameter[box].left + deltaX
+      const height = this.state.canvasParameter[box].height - deltaY
+      const top = this.state.canvasParameter[box].top + deltaY
+      this.setState({
+        canvasParameter:{
+          ...this.state.canvasParameter,
+          [box]:{
+            top,
+            left,
+            width,
+            height
+          },
+        }
+      })
+    }
   }
 
   componentDidMount() {
@@ -180,7 +246,7 @@ class App extends React.Component{
             <Tool/>
           </aside>
           <main className="main">
-            <Canvas parameter={this.canvasParameter} getImgScr={this.getImgSrcAndTransform}/>
+            <Canvas parameter={this.state.canvasParameter} getImgScr={this.getImgSrcAndTransform} justifyBox={this.justifyBox}/>
             <canvas className='show' ref={this.canvas}>当前浏览器不支持 Canvas，推荐使用 Chrome 浏览器</canvas>
             <button className='download-canvas' onClick={this.downloadCanvas}>下载图片</button>
           </main>

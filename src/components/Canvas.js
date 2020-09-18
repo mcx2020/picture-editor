@@ -75,52 +75,66 @@ class Canvas extends React.Component{
     }
     this.props.getImgScr(imgSrcList)
   }
-
+// 按下调节线
   lineDown = (lineDirection,e)=>{
     this.setState({draggable:true})
     this.setState({position:[e.clientX,e.clientY]})
-    console.log(e.clientX)
     this.setState({lineDirection})
   }
-  lineMove = (e)=>{
-    if(this.state.draggable === false)return;
-    let deltaX = e.clientX - this.state.position[0]
-    let deltaY = e.clientY - this.state.position[1]
 
-    if(this.state.lineDirection === 'row'){
-      let top = parseInt(this.state.rowLine.top) + deltaY
-      this.setState({rowLine:{
-          ...this.state.rowLine,
-          width: 400,
-          height:10,
-          top,
-          zIndex:'5'
-        }})
-    }else{
-      let left = parseInt(this.state.columnLine.left) + deltaX
-      this.setState({columnLine:{
-          ...this.state.columnLine,
-          width: 10,
-          height:400,
-          left,
-          zIndex:'5'
-        }})
-    }
+  componentDidMount() {
+    // 监听鼠标的位置移动
+    document.addEventListener('mousemove',(e)=>{
+      if(this.state.draggable === false)return;
+      let deltaX = e.clientX - this.state.position[0]
+      let deltaY = e.clientY - this.state.position[1]
+      if(this.state.lineDirection === 'row'){
+        let top = parseInt(this.state.rowLine.top) + deltaY
+        this.setState({rowLine:{
+            ...this.state.rowLine,
+            width: 400,
+            height:10,
+            top,
+            zIndex:'5'
+          }})
+      }else{
+        let left = parseInt(this.state.columnLine.left) + deltaX
+        this.setState({columnLine:{
+            ...this.state.columnLine,
+            width: 10,
+            height:400,
+            left,
+            zIndex:'5'
+          }})
+      }
+      this.setState({
+        position:[e.clientX,e.clientY]
+      })
 
-    this.setState({
-      position:[e.clientX,e.clientY]
+      if(this.state.lineDirection === 'row'){
+        this.props.justifyBox('box1',0,deltaY)
+        this.props.justifyBox('box2',0,deltaY)
+        this.props.justifyBox('box3',0,deltaY)
+        this.props.justifyBox('box4',0,deltaY)
+      }else{
+        this.props.justifyBox('box1',deltaX,0)
+        this.props.justifyBox('box2',deltaX,0)
+        this.props.justifyBox('box3',deltaX,0)
+        this.props.justifyBox('box4',deltaX,0)
+      }
+
+
+    })
+
+    // 监听鼠标的抬起
+    document.addEventListener('mouseup',()=>{
+      this.setState({draggable:false})
     })
   }
 
-  lineUp = ()=>{
-    this.setState({draggable:false})
-    console.log('弹起了')
-  }
   render(){
     return (
-      <Wrapper style={this.props.parameter.canvasSize}
-               onMouseMove={this.lineMove}
-               onMouseUp={this.lineUp}>
+      <Wrapper style={this.props.parameter.canvasSize}>
         <div className="line-row1"
              style={this.state.rowLine}
              onMouseDown={this.lineDown.bind(null,'row')} />
@@ -130,7 +144,8 @@ class Canvas extends React.Component{
         <div className="picture-area"
              style={this.props.parameter.box1}
              onDragOver={(event)=>{event.preventDefault()}}
-             onDrop={this.handleDrop.bind(this,"img1")}>
+             onDrop={this.handleDrop.bind(this,"img1")}
+             >
           <img ref={this.img1} src="" alt=""/>
         </div>
         <div className="picture-area"
